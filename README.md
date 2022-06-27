@@ -1,2 +1,2 @@
 # SVM
-This is the repository for SVM term project.
+This is the repository for SVM.
