@@ -1,17 +1,20 @@
 import pandas as pd
-import json
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 
-df1 = pd.read_json('Software.json', lines=True)
-
-input_document = []
-for text in df1["reviewText"]:
-    input_document.append(text)
-
-df2 = pd.read_json('Prime_Pantry.json', lines=True)
-
-for text in df2["reviewText"]:
-    input_document.append(text)
+def create_tfidf_table():
+    #create data frame from json file
+    df1 = pd.read_json('Software.json', lines=True)
+    df2 = pd.read_json('Prime_Pantry.json', lines=True)
     
-print(input_document[0])
-print(input_document[400])
+    df = pd.concat([df1,df2],ignore_index=True)
+    
+    # calculate TF-IDF and vectorize
+    vectorizer = TfidfVectorizer()
+    
+    X = vectorizer.fit_transform(df['reviewText'].values.astype('U'))
+    
+    input_documents = X.toarray()
+    
+    return input_documents
