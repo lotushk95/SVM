@@ -1,45 +1,35 @@
-from collections import Counter
-from collections import defaultdict
-import math
-import numpy as np
+import nltk
+from sklearn.feature_extraction.text import TfidfVectorizer
+import pandas
 
-def calc_tfidf(input_documents):
-    N = len(input_documents)
-    words = "".join(input_documents).split()
-    count = Counter(words).most_common()
-    
-    #build dictionaries
-    rdic = [i[0] for i in count]
-    
-    #calculating TFIDF
-    document_TFtable = defaultdict(Counter)
-    document_DFtable = Counter()
-    document_TFIDFtable = defaultdict(Counter)
-    
-    #calculate term frequency
-    for document in input_documents:
-        words = document.split()
-        for word in words:
-            document_TFtable[document][word] += 1
-            
-    #calculate document frequency
-        for kw in document_TFtable[document].keys():
-            document_DFtable[kw] += 1
-            
-    #calculate TF-IDF
-    for document in input_documents:
-        for kw in document_TFtable[document].keys():
-            document_TFIDFtable[document][kw] = document_TFtable[document][kw] * math.log(N/document_DFtable[kw])
-            
-          
-    # make vector for calculating cosine similarity
-    TFIDFtable = [[0.0 for _ in range(len(rdic))] for _ in range(len(document_TFIDFtable))]
+def calc_tfidf(df):
+    review_text = []
+    for data in df['reviewText'].values.astype('U'):
+        review_text.append(data)
+        
+    filtered_text = []
+    for text in review_text:
+        
+        word_list = []
+        token = nltk.word_tokenize(text)
+        token_tag = nltk.pos_tag(token)
+        # print(token_tag)
+        
+        for word, tag in token_tag:
+            if tag == 'JJ' or tag == 'JJS' or tag == 'JJR' or tag == 'RB' or tag == 'NN' or tag == 'NNP' or tag == 'NNS' or tag == 'VB' or tag == 'VBD' or tag == 'VBG' or tag == 'VBN' or tag == 'VBZ':
+                word_list.append(word)
+            else:
+                continue
+        filtered_text.append(' '.join(word_list))
 
-    for i in range(len(input_documents)):
-        for j in range(len(rdic)):
-            keys_array = document_TFIDFtable[input_documents[i]].keys()
-            for key in keys_array:
-                if rdic[j] == key:
-                    TFIDFtable[i][j] = document_TFIDFtable[input_documents[i]][key]
     
-    return TFIDFtable #return vector for cosine similarity
+
+    # calculate TF-IDF and vectorize
+    vectorizer = TfidfVectorizer()
+
+    # X = vectorizer.fit_transform(df['reviewText'].values.astype('U'))
+    X = vectorizer.fit_transform(filtered_text)
+    
+    input_documents = X.toarray()
+    
+    return input_documents

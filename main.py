@@ -1,13 +1,16 @@
 import pandas as pd
 import numpy as np
 
-from predata import create_tfidf_table
+from predata import get_data
 from predict import predict
+from tfidf import calc_tfidf
 
 
 
 if __name__ == "__main__":
     
-    input_documents = create_tfidf_table()
+    df = get_data()
     
-    predict(input_documents)
+    tfidf_table = calc_tfidf(df)
+    
+    predict(tfidf_table)
