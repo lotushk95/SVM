@@ -3,10 +3,12 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import pandas
 
 def calc_tfidf(df):
+    
     review_text = []
     for data in df['reviewText'].values.astype('U'):
         review_text.append(data)
-        
+    
+    #filtering text using nltk pos tag
     filtered_text = []
     for text in review_text:
         

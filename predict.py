@@ -19,9 +19,11 @@ def predict(X):
     y = np.array(y).reshape(-1,1)
     
     # print(X.shape)
-    # print(y.shape)
+    # print(y.shape
     
+    #split the data set into train data and test data 
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
+    
     model = svm.SVC()
     model.fit(X_train,y_train)
     y_pred = model.predict(X_test)
@@ -29,6 +31,7 @@ def predict(X):
     # print("test_label:predict_label")
     # print(f"{y_test}:{y_pred}")
     
+    #evaluate model
     print(f"accuracy :{accuracy_score(y_test, y_pred)}")
     print(f"precision:{precision_score(y_test, y_pred)}")
     print(f"recall   :{recall_score(y_test, y_pred)}")
